@@ -13,7 +13,8 @@ products.forEach(p => {
 });
 
 function orderNow(name) {
-  const phone = "917247465997"; // apna number yahan dalo
-  const msg = `Hello, I want to order ${name}. Please share details.`;
-  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`);
+  const phone = "917247465997"; // apna number yahan (no +, no space)
+  const msg = `Hello, I want to order ${name}`;
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+  window.open(url, "_blank");
 }
