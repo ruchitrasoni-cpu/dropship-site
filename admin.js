@@ -1,41 +1,53 @@
-let products = JSON.parse(localStorage.getItem("products")) || [];
+import { db } from "./firebase.js";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-function saveProducts() {
-  localStorage.setItem("products", JSON.stringify(products));
-  renderAdmin();
-}
+const productRef = collection(db, "products");
 
-function addProduct() {
+async function addProduct() {
   const name = document.getElementById("name").value;
   const price = document.getElementById("price").value;
-  const image = document.getElementById("image").value || "https://via.placeholder.com/300";
+  const image =
+    document.getElementById("image").value ||
+    "https://via.placeholder.com/300";
 
-  if (!name || !price) return alert("Fill all fields");
+  if (!name || !price) {
+    alert("Fill all fields");
+    return;
+  }
 
-  products.push({ name, price, image });
-  saveProducts();
+  await addDoc(productRef, { name, price, image });
 
   document.getElementById("name").value = "";
   document.getElementById("price").value = "";
   document.getElementById("image").value = "";
+
+  loadProducts();
 }
 
-function deleteProduct(index) {
-  products.splice(index, 1);
-  saveProducts();
+async function deleteProduct(id) {
+  await deleteDoc(doc(db, "products", id));
+  loadProducts();
 }
 
-function renderAdmin() {
+async function loadProducts() {
   const list = document.getElementById("admin-products");
   list.innerHTML = "";
 
-  products.forEach((p, i) => {
+  const snapshot = await getDocs(productRef);
+  snapshot.forEach(docSnap => {
+    const p = docSnap.data();
     list.innerHTML += `
       <div class="product">
         <img src="${p.image}">
         <h3>${p.name}</h3>
         <p class="price">${p.price}</p>
-        <button onclick="deleteProduct(${i})" style="background:red">
+        <button onclick="deleteProduct('${docSnap.id}')" style="background:red">
           Delete
         </button>
       </div>
@@ -43,4 +55,7 @@ function renderAdmin() {
   });
 }
 
-renderAdmin();
+window.addProduct = addProduct;
+window.deleteProduct = deleteProduct;
+
+loadProducts();
