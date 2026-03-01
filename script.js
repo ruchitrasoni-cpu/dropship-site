@@ -7,14 +7,17 @@ products.forEach(p => {
       <img src="${p.image}">
       <h3>${p.name}</h3>
       <p class="price">${p.price}</p>
-      <button onclick="orderNow('${p.name}')">Order on WhatsApp</button>
+      <button class="wa-btn">Order on WhatsApp</button>
     </div>
   `;
 });
 
-function orderNow(name) {
-  const phone = "917247465997"; // apna number yahan (no +, no space)
-  const msg = `Hello, I want to order ${name}`;
-  const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
-  window.open(url, "_blank");
-}
+document.addEventListener("click", function (e) {
+  if (e.target.classList.contains("wa-btn")) {
+    const name = e.target.parentElement.querySelector("h3").innerText;
+    const phone = "917247465997"; // 🔴 APNA NUMBER YAHAN
+    const msg = "Hello, I want to order " + name;
+    const url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(msg);
+    window.location.href = url;
+  }
+});
