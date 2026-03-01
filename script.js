@@ -1,23 +1,34 @@
+import { db } from "./firebase.js";
+import {
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
 const productList = document.getElementById("product-list");
-const products = JSON.parse(localStorage.getItem("products")) || [];
+const productRef = collection(db, "products");
 
-products.forEach(p => {
-  productList.innerHTML += `
-    <div class="product">
-      <img src="${p.image}">
-      <h3>${p.name}</h3>
-      <p class="price">${p.price}</p>
-      <button class="wa-btn">Order on WhatsApp</button>
-    </div>
-  `;
-});
+async function loadProducts() {
+  productList.innerHTML = "";
+  const snapshot = await getDocs(productRef);
 
-document.addEventListener("click", function (e) {
-  if (e.target.classList.contains("wa-btn")) {
-    const name = e.target.parentElement.querySelector("h3").innerText;
-    const phone = "917247465997"; // 🔴 APNA NUMBER YAHAN
-    const msg = "Hello, I want to order " + name;
-    const url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(msg);
-    window.location.href = url;
-  }
-});
+  snapshot.forEach(docSnap => {
+    const p = docSnap.data();
+    productList.innerHTML += `
+      <div class="product">
+        <img src="${p.image}">
+        <h3>${p.name}</h3>
+        <p class="price">${p.price}</p>
+        <button onclick="orderNow('${p.name}')">Order on WhatsApp</button>
+      </div>
+    `;
+  });
+}
+
+window.orderNow = function(name) {
+  const phone = "917247465997"; // 🔴 apna number
+  const msg = `Hello, I want to order ${name}`;
+  window.location.href =
+    "https://wa.me/" + phone + "?text=" + encodeURIComponent(msg);
+};
+
+loadProducts();
