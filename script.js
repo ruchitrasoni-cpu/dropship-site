@@ -26,9 +26,6 @@ async function loadProducts() {
 
 window.orderNow = function(name) {
   const phone = "917247465997"; // 🔴 apna number
-  const msg = `Hello, I want to order ${name}`;
-  window.location.href =
-    "https://wa.me/" + phone + "?text=" + encodeURIComponent(msg);
-};
-
+ const msg = `Hello, I want to order ${name}.
+Please confirm price, COD availability & delivery time.`;
 loadProducts();
