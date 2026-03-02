@@ -1,12 +1,9 @@
-console.log("admin js loaded");
+import { db } from "./firebase.js";
+
+console.log("firebase db object:", db);
 
 const btn = document.getElementById("addBtn");
-const nameInput = document.getElementById("name");
-const priceInput = document.getElementById("price");
 
 btn.addEventListener("click", () => {
-  alert(
-    "Name: " + nameInput.value + 
-    " | Price: " + priceInput.value
-  );
+  alert("Firebase connected, next step DB write");
 });
