@@ -9,13 +9,19 @@ import {
 
 const productRef = collection(db, "products");
 
-// 🔴 FUNCTION DEFINITIONS
+// DOM elements
+const addBtn = document.getElementById("addBtn");
+const nameInput = document.getElementById("name");
+const priceInput = document.getElementById("price");
+const imageInput = document.getElementById("image");
+const list = document.getElementById("admin-products");
+
+// ADD PRODUCT
 async function addProduct() {
-  const name = document.getElementById("name").value;
-  const price = document.getElementById("price").value;
+  const name = nameInput.value;
+  const price = priceInput.value;
   const image =
-    document.getElementById("image").value ||
-    "https://via.placeholder.com/300";
+    imageInput.value || "https://via.placeholder.com/300";
 
   if (!name || !price) {
     alert("Fill all fields");
@@ -24,41 +30,46 @@ async function addProduct() {
 
   await addDoc(productRef, { name, price, image });
 
-  document.getElementById("name").value = "";
-  document.getElementById("price").value = "";
-  document.getElementById("image").value = "";
+  nameInput.value = "";
+  priceInput.value = "";
+  imageInput.value = "";
 
   loadProducts();
 }
 
+// DELETE PRODUCT
 async function deleteProduct(id) {
   await deleteDoc(doc(db, "products", id));
   loadProducts();
 }
 
+// LOAD PRODUCTS
 async function loadProducts() {
-  const list = document.getElementById("admin-products");
   list.innerHTML = "";
-
   const snapshot = await getDocs(productRef);
+
   snapshot.forEach(docSnap => {
     const p = docSnap.data();
-    list.innerHTML += `
-      <div class="product">
-        <img src="${p.image}">
-        <h3>${p.name}</h3>
-        <p class="price">${p.price}</p>
-        <button onclick="deleteProduct('${docSnap.id}')" style="background:red">
-          Delete
-        </button>
-      </div>
+    const div = document.createElement("div");
+    div.className = "product";
+
+    div.innerHTML = `
+      <img src="${p.image}">
+      <h3>${p.name}</h3>
+      <p class="price">${p.price}</p>
+      <button class="delBtn">Delete</button>
     `;
+
+    div.querySelector(".delBtn").addEventListener("click", () => {
+      deleteProduct(docSnap.id);
+    });
+
+    list.appendChild(div);
   });
 }
 
-// ✅ MOST IMPORTANT LINES (GLOBAL BINDING)
-window.addProduct = addProduct;
-window.deleteProduct = deleteProduct;
+// EVENT LISTENER (THIS IS THE FIX)
+addBtn.addEventListener("click", addProduct);
 
 // INITIAL LOAD
 loadProducts();
