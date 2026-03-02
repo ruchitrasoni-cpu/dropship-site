@@ -1,7 +1,12 @@
 console.log("admin js loaded");
 
 const btn = document.getElementById("addBtn");
+const nameInput = document.getElementById("name");
+const priceInput = document.getElementById("price");
 
 btn.addEventListener("click", () => {
-  alert("BUTTON CLICK WORKING");
+  alert(
+    "Name: " + nameInput.value + 
+    " | Price: " + priceInput.value
+  );
 });
