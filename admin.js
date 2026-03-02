@@ -9,6 +9,7 @@ import {
 
 const productRef = collection(db, "products");
 
+// 🔴 FUNCTION DEFINITIONS
 async function addProduct() {
   const name = document.getElementById("name").value;
   const price = document.getElementById("price").value;
@@ -55,7 +56,9 @@ async function loadProducts() {
   });
 }
 
+// ✅ MOST IMPORTANT LINES (GLOBAL BINDING)
 window.addProduct = addProduct;
 window.deleteProduct = deleteProduct;
 
+// INITIAL LOAD
 loadProducts();
